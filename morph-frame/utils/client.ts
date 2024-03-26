@@ -7,16 +7,9 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
-import { config } from "dotenv";
-import {
-  pharoTokenAddress,
-  defaultTokensToMint,
-  pharoCoverAddress,
-} from "./config.js";
-// import { abi as pharoTokenAbi } from "../abis/PharoToken.js";
-// import { abi as pharoCoverAbi } from "../abis/PharoCover.js";
+import * as dotenv from "dotenv";
 
-config();
+dotenv.config();
 
 export const walletClient = createWalletClient({
   chain: baseSepolia,
@@ -48,9 +41,9 @@ export const adminAccount = privateKeyToAccount(
 //   return await walletClient.writeContract(request);
 // };
 
-export const getPharoBalance = async (user: Address) => {
+export const getBalance = async (user: Address, token: Address) => {
   const balance = await publicClient.readContract({
-    address: pharoTokenAddress,
+    address: token,
     abi: [
       {
         type: "function",
@@ -79,43 +72,6 @@ export const getShibPriceData = async () => {
 
   return response.json();
 };
-
-// export const sendPolicyTransaction = async (
-//   rateEstimate: bigint,
-//   coverBuyer: Address
-// ) => {
-//   const { request } = await publicClient.simulateContract({
-//     address: pharoCoverAddress,
-//     abi: pharoCoverAbi,
-//     functionName: "createCoverPolicy",
-//     // [coverBuyer, token, pharoId, {signedPolicyData}]
-//     args: [
-//       coverBuyer,
-//       pharoTokenAddress,
-//       BigInt(0),
-//       {
-//         minCover: BigInt(3000),
-//         premium: BigInt(1500),
-//         rateEstimate: rateEstimate,
-//         lengthOfCover: BigInt(604800), // seconds in a week
-//       },
-//     ],
-//     account: adminAccount,
-//   });
-
-//   return await walletClient.writeContract(request);
-// };
-
-// export const hasPolicy = async (coverBuyer: Address) => {
-//   const policy = await publicClient.readContract({
-//     address: pharoCoverAddress,
-//     abi: pharoCoverAbi,
-//     functionName: "getBuyerPoliciesCount",
-//     args: [coverBuyer, [BigInt(0)]],
-//   });
-
-//   return policy >= BigInt(0);
-// };
 
 export const getUserData = async (fid: number) => {
   const options = {
